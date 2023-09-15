@@ -10,10 +10,12 @@ class AccountController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $accounts = Account::where('status', '=', 0)->get();
-        return view("accounts.index", ['list' => $accounts]);
+        $sort = $request->query('sort', 'id'); // 初期値=id
+        $order = $request->query('order', 'asc'); // 初期値=昇順
+        $accounts = Account::where('status', '=', 0)->orderBy($sort, $order)->paginate(2);
+        return view("accounts.index", ['list' => $accounts, 'sort' => $sort, 'order' => $order]);
     }
 
     /**
